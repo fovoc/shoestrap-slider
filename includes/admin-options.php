@@ -22,6 +22,18 @@ function shoestrap_slider_module_options( $sections ) {
   );
 
   $fields[] = array( 
+    'title'     => __( 'Slider Type', 'shoestrap' ),
+    'desc'      => __( 'Select what type of slider you want.', 'shoestrap' ),
+    'id'        => 'shoestrap_slider_type',
+    'type'      => 'button_set',
+    'options'   => array(
+      'bootstrap'  => 'Bootstrap',
+      'flexslider' => 'FlexSlider',
+    ),
+    'default' => 'bootstrap'
+  );
+
+  $fields[] = array( 
     'title'     => __( 'Flexslider Images Height', 'shoestrap_edd' ),
     'desc'      => '',
     'id'        => 'shoestrap_slider_height',

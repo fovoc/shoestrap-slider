@@ -16,10 +16,13 @@ require_once dirname( __FILE__ ) . '/includes/admin-options.php';
 
 // If the user has selected not to use flexslider, do not process.
 $options = get_option( 'shoestrap' );
-if ( $options['shoestrap_slider_flex_on'] != 1 ) exit;
+if ( $options['shoestrap_slider_flex_on'] != 0 ) :
+	// Add the flexslider gallery shortcode
+	require_once dirname( __FILE__ ) . '/includes/gallery-shortcode.php';
 
-// Add the flexslider gallery shortcode
-require_once dirname( __FILE__ ) . '/includes/gallery-shortcode.php';
+	// Enqueue stylesheets and scripts
+	add_action( 'wp_enqueue_scripts', 'shoestrap_slider_enqueue_resources', 102 );
+endif;
 
 /*
  * Enqueue stylesheets and scripts
@@ -29,4 +32,3 @@ function shoestrap_slider_enqueue_resources() {
 	wp_register_script( 'shoestrap_slider', plugins_url( 'assets/js/jquery.flexslider-min.js', __FILE__ ), false, null, true );
 	wp_enqueue_script( 'shoestrap_slider' );
 }
-add_action( 'wp_enqueue_scripts', 'shoestrap_slider_enqueue_resources', 102 );

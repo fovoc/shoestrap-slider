@@ -77,10 +77,12 @@ function shoestrap_slider_gallery( $attr ) {
 	endif;
 
 	$unique = ( get_query_var( 'page' ) ) ? $instance . '-p' . get_query_var( 'page' ): $instance;
-	$output = '<div class="gallery flexslider gallery-' . $id . '-' . $unique . '">';
-	$output .= '<ul class="slides">';
-	$output .= shoestrap_slider_gallery_script( '.gallery-' . $id . '-' . $unique );
+	$output = shoestrap_slider_helper( 'wrapper_start', 'gallery-' . $post->ID . '-' . $unique );
+	$i = 0; foreach ( $attachments as $id => $attachment ) : $i++; endforeach;
+	$output .= shoestrap_slider_helper( 'before_inner_start', 'gallery-' . $post->ID . '-' . $unique, $i );
+	$output .= shoestrap_slider_helper( 'inner_start', 'slides' );
 
+	$i = 0;
 	foreach ( $attachments as $id => $attachment ) :
 
 		$imageurl = wp_get_attachment_url( $id );
@@ -90,29 +92,117 @@ function shoestrap_slider_gallery( $attr ) {
 
 		$image = shoestrap_image_resize( $image_args );
 		$image_url = $image['url'];
-		$output .= '<li><img src="' . $image_url . '" />';
+		$output .= shoestrap_slider_helper( 'slide_element_start', $i ) . '<img src="' . $image_url . '" />';
 		
 		if ( trim( $attachment->post_excerpt ) ) :
-			$output .= '<p class="flex-caption caption hidden">' . wptexturize( $attachment->post_excerpt ) . '</p>';
+			$output .= shoestrap_slider_helper( 'caption_start', '' );
+			$output .= wptexturize( $attachment->post_excerpt );
+			$output .= shoestrap_slider_helper( 'caption_end', '' );
 		endif;
 		
-		$output .= '</li>';
+		$output .= shoestrap_slider_helper( 'slide_element_end', '' );
+		$i++;
 	endforeach;
 
-	$output .= '</ul>';
-	$output .= '</div>';
+	$output .= shoestrap_slider_helper( 'inner_end', '' );
+	$output .= shoestrap_slider_helper( 'before_wrapper_end', 'gallery-' . $post->ID . '-' . $unique );
+	$output .= shoestrap_slider_helper( 'wrapper_end', '' );
+
+	$output .= shoestrap_slider_gallery_script( '.gallery-' . $post->ID . '-' . $unique );
 
 	return $output;
 }
 
+
+/*
+ * Replace default gallery with our custom shortcode
+ */
 function shoestrap_slider_gallery_setup_after_theme() {
 	remove_shortcode( 'gallery' );
 	add_shortcode( 'gallery', 'shoestrap_slider_gallery' );
 }
 add_action( 'after_setup_theme', 'shoestrap_slider_gallery_setup_after_theme' );
 
-function shoestrap_slider_gallery_script( $element = '.flexslider' ) {
-	$script = '<script>$(window).load(function() { $("' . $element . '").flexslider({ animation: "slide" }); });</script>';
+
+/*
+ * The script required for the sliders.
+ */
+function shoestrap_slider_gallery_script( $element = '' ) {
+	$options = get_option( 'shoestrap' );
+
+	if ( $options['shoestrap_slider_type'] == 'flexslider' ) :
+		$script = '<script>$(window).load(function() { $("' . $element . '").flexslider({ animation: "slide" }); });</script>';
+	elseif ( $options['shoestrap_slider_type'] == 'bootstrap' ) :
+		$script = '<script>$(window).load(function() { $("' . $element . '").carousel(); });</script>';
+	endif;
 
 	return $script;
+}
+
+/*
+ * Slider Helper function
+ */
+function shoestrap_slider_helper( $element, $class, $count = 0 ) {
+	$options = get_option( 'shoestrap' );
+
+	$content = '';
+
+	// Elements for flexslider
+	if ( $options['shoestrap_slider_type'] == 'flexslider' ) :
+		if ( $element == 'wrapper_start' ) :
+			$content = '<div class="flexslider ' . $class . '">';
+		elseif ( $element == 'wrapper_end' ) :
+			$content = '</div>';
+		elseif ( $element == 'inner_start' ) :
+			$content = '<ul class="slides">';
+		elseif ( $element == 'inner_end' ) :
+			$content = '</ul>';
+		elseif ( $element == 'slide_element_start' ) :
+			$content = '<li>';
+		elseif ( $element == 'slide_element_end' ) :
+			$content = '</li>';
+		elseif ( $element == 'caption_start' ) :
+			$content = '<p class="flex-caption caption hidden">';
+		elseif ( $element == 'caption_end' ) :
+			$content = '</p>';
+		endif;
+
+	// Elements for Bootstrap Carousel
+	elseif ( $options['shoestrap_slider_type'] == 'bootstrap' ) :
+		if ( $element == 'wrapper_start' ) :
+			$content = '<div id="' . $class . '" class="carousel slide ' . $class . '">';
+		elseif ( $element == 'wrapper_end' ) :
+			$content = '</div>';
+		elseif ( $element == 'inner_start' ) :
+			$content = '<div class="carousel-inner ' . $class . '">';
+		elseif ( $element == 'inner_end' ) :
+			$content = '</div>';
+		elseif ( $element == 'slide_element_start' ) :
+			$content = '<div class="item ' . $class . '">';
+			if ( $class == 0 ) :
+				$content = '<div class="item active">';
+			endif;
+		elseif ( $element == 'slide_element_end' ) :
+			$content = '</div>';
+		elseif ( $element == 'before_wrapper_end' ) :
+			$content = '<a class="left carousel-control" href="#' . $class . '" data-slide="prev"><span class="elusive icon-prev"></span></a>';
+			$content .= '<a class="right carousel-control" href="#' . $class . '" data-slide="next"><span class="elusive icon-next"></span></a>';
+		elseif ( $element == 'caption_start' ) :
+			$content = '<div class="carousel-caption">';
+		elseif ( $element == 'caption_end' ) :
+			$content = '</div>';
+		elseif ( $element == 'before_inner_start' ) :
+			$content = '<ol class="carousel-indicators">';
+			for ( $i=0; $i<$count ; $i++ ) :
+				if ( $i == 0 ) :
+					$content .= '<li data-target="#' . $class . '" data-slide-to="' . $i . '" class="active"></li>';
+				else :
+					$content .= '<li data-target="#' . $class . '" data-slide-to="' . $i . '"></li>';
+				endif;
+			endfor;
+			$content .= '</ol>';
+		endif;
+	endif;
+
+	return $content;
 }
