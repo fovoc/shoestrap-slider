@@ -149,58 +149,83 @@ function shoestrap_slider_helper( $element, $class, $count = 0 ) {
 
 	// Elements for flexslider
 	if ( $options['shoestrap_slider_type'] == 'flexslider' ) :
+
 		if ( $element == 'wrapper_start' ) :
 			$content = '<div class="flexslider ' . $class . '">';
+
 		elseif ( $element == 'wrapper_end' ) :
 			$content = '</div>';
+
 		elseif ( $element == 'inner_start' ) :
 			$content = '<ul class="slides">';
+
 		elseif ( $element == 'inner_end' ) :
 			$content = '</ul>';
+
 		elseif ( $element == 'slide_element_start' ) :
 			$content = '<li>';
+
 		elseif ( $element == 'slide_element_end' ) :
 			$content = '</li>';
+
 		elseif ( $element == 'caption_start' ) :
 			$content = '<p class="flex-caption caption hidden">';
+
 		elseif ( $element == 'caption_end' ) :
 			$content = '</p>';
+
 		endif;
 
 	// Elements for Bootstrap Carousel
 	elseif ( $options['shoestrap_slider_type'] == 'bootstrap' ) :
+
 		if ( $element == 'wrapper_start' ) :
 			$content = '<div id="' . $class . '" class="carousel slide ' . $class . '">';
+
 		elseif ( $element == 'wrapper_end' ) :
 			$content = '</div>';
+
 		elseif ( $element == 'inner_start' ) :
 			$content = '<div class="carousel-inner ' . $class . '">';
+
 		elseif ( $element == 'inner_end' ) :
 			$content = '</div>';
+
 		elseif ( $element == 'slide_element_start' ) :
 			$content = '<div class="item ' . $class . '">';
+
 			if ( $class == 0 ) :
 				$content = '<div class="item active">';
 			endif;
+
 		elseif ( $element == 'slide_element_end' ) :
 			$content = '</div>';
+
 		elseif ( $element == 'before_wrapper_end' ) :
 			$content = '<a class="left carousel-control" href="#' . $class . '" data-slide="prev"><span class="elusive icon-prev"></span></a>';
 			$content .= '<a class="right carousel-control" href="#' . $class . '" data-slide="next"><span class="elusive icon-next"></span></a>';
+
 		elseif ( $element == 'caption_start' ) :
 			$content = '<div class="carousel-caption">';
+
 		elseif ( $element == 'caption_end' ) :
 			$content = '</div>';
+
 		elseif ( $element == 'before_inner_start' ) :
 			$content = '<ol class="carousel-indicators">';
+
 			for ( $i=0; $i<$count ; $i++ ) :
+
 				if ( $i == 0 ) :
 					$content .= '<li data-target="#' . $class . '" data-slide-to="' . $i . '" class="active"></li>';
 				else :
 					$content .= '<li data-target="#' . $class . '" data-slide-to="' . $i . '"></li>';
 				endif;
+
 			endfor;
+
 			$content .= '</ol>';
+
 		endif;
 	endif;
 
