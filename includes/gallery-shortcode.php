@@ -82,17 +82,18 @@ function shoestrap_slider_gallery( $attr ) {
 	$output .= shoestrap_slider_helper( 'before_inner_start', 'gallery-' . $post->ID . '-' . $unique, $i );
 	$output .= shoestrap_slider_helper( 'inner_start', 'slides' );
 
+	$width    = $options['screen_large_desktop'];
+	$height   = $options['shoestrap_slider_height'];
+
 	$i = 0;
 	foreach ( $attachments as $id => $attachment ) :
 
 		$imageurl = wp_get_attachment_url( $id );
-		$width    = $options['screen_large_desktop'];
-		$height   = $options['shoestrap_slider_height'];
 		$image_args = array( "url" => $imageurl, "width" => $width, "height" => $height );
 
 		$image = shoestrap_image_resize( $image_args );
 		$image_url = $image['url'];
-		$output .= shoestrap_slider_helper( 'slide_element_start', $i ) . '<img src="' . $image_url . '" />';
+		$output .= shoestrap_slider_helper( 'slide_element_start', $imageurl, $i ) . '<img src="' . $image_url . '" />';
 		
 		if ( trim( $attachment->post_excerpt ) ) :
 			$output .= shoestrap_slider_helper( 'caption_start', '' );
@@ -107,6 +108,25 @@ function shoestrap_slider_gallery( $attr ) {
 	$output .= shoestrap_slider_helper( 'inner_end', '' );
 	$output .= shoestrap_slider_helper( 'before_wrapper_end', 'gallery-' . $post->ID . '-' . $unique );
 	$output .= shoestrap_slider_helper( 'wrapper_end', '' );
+
+	if ( $options['shoestrap_slider_flextype'] == 'w_thumb' ) :
+		$output .= '<div id="carousel" class="flexslider"><ul class="slides">';
+
+		$i = 0;
+		foreach ( $attachments as $id => $attachment ) :
+
+			$imageurl = wp_get_attachment_url( $id );
+			$image_args = array( "url" => $imageurl, "width" => $width, "height" => $height );
+
+			$image = shoestrap_image_resize( $image_args );
+			$image_url = $image['url'];
+			$output .= shoestrap_slider_helper( 'slide_element_start', $imageurl, $i ) . '<img src="' . $image_url . '" />';
+			$output .= shoestrap_slider_helper( 'slide_element_end', '' );
+			$i++;
+		endforeach;
+
+		$output .= '</ul></div>';
+	endif;
 
 	$output .= shoestrap_slider_gallery_script( '.gallery-' . $post->ID . '-' . $unique );
 
@@ -130,13 +150,40 @@ add_action( 'after_setup_theme', 'shoestrap_slider_gallery_setup_after_theme' );
 function shoestrap_slider_gallery_script( $element = '' ) {
 	$options = get_option( 'shoestrap' );
 
-	if ( $options['shoestrap_slider_type'] == 'flexslider' ) :
-		$script = '<script>$(window).load(function() { $("' . $element . '").flexslider({ animation: "slide" }); });</script>';
-	elseif ( $options['shoestrap_slider_type'] == 'bootstrap' ) :
-		$script = '<script>$(window).load(function() { $("' . $element . '").carousel(); });</script>';
+	// The Bootstrap Carousel script
+	if ( $options['shoestrap_slider_type'] == 'bootstrap' ) :
+		$script = '$("' . $element . '").carousel();';
+
+	// If flexslider is selected, process the below
+	elseif ( $options['shoestrap_slider_type'] == 'flexslider' ) :
+		// The basic script
+		$script = '$("' . $element . '").flexslider({ animation: "slide" });';
+
+		// The script that adds thumbs if selected.
+		if ( $options['shoestrap_slider_flextype'] == 'w_thumb' ) :
+			$script = '
+				$("#carousel").flexslider({
+					animation: "slide",
+					controlNav: false,
+					animationLoop: false,
+					slideshow: false,
+					itemWidth: ' . ( $options['screen_large_desktop'] / 4 ) . ',
+					itemMargin: 0,
+					asNavFor: "' . $element . '"
+				});
+
+				$("' . $element . '").flexslider({
+					animation: "slide",
+					controlNav: false,
+					animationLoop: false,
+					slideshow: false,
+					sync: "#carousel"
+				});';
+		endif;
+
 	endif;
 
-	return $script;
+	return '<script>$(window).load(function() {' . $script . '});</script>';
 }
 
 /*
@@ -163,7 +210,7 @@ function shoestrap_slider_helper( $element, $class, $count = 0 ) {
 			$content = '</ul>';
 
 		elseif ( $element == 'slide_element_start' ) :
-			$content = '<li>';
+			$content = '<li data-thumb="' . $class . '">';
 
 		elseif ( $element == 'slide_element_end' ) :
 			$content = '</li>';
@@ -192,7 +239,7 @@ function shoestrap_slider_helper( $element, $class, $count = 0 ) {
 			$content = '</div>';
 
 		elseif ( $element == 'slide_element_start' ) :
-			$content = '<div class="item ' . $class . '">';
+			$content = '<div class="item ' . $count . '">';
 
 			if ( $class == 0 ) :
 				$content = '<div class="item active">';

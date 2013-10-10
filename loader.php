@@ -16,7 +16,7 @@ require_once dirname( __FILE__ ) . '/includes/admin-options.php';
 
 // If the user has selected not to use flexslider, do not process.
 $options = get_option( 'shoestrap' );
-if ( $options['shoestrap_slider_flex_on'] != 0 ) :
+if ( $options['shoestrap_slider_toggle'] != 0 ) :
 	// Add the flexslider gallery shortcode
 	require_once dirname( __FILE__ ) . '/includes/gallery-shortcode.php';
 

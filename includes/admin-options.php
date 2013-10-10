@@ -12,16 +12,16 @@ function shoestrap_slider_module_options( $sections ) {
     'icon'  => 'elusive icon-shopping-cart icon-large'
   );
 
-  $fields[] = array( 
-    'title'     => __( 'Use Flexslider for galleries', 'shoestrap_edd' ),
+  $fields[] = array(
+    'title'     => __( 'Use Slider/Carousel for galleries', 'shoestrap_edd' ),
     'desc'      => __( 'Default: On.', 'shoestrap' ),
-    'id'        => 'shoestrap_slider_flex_on',
+    'id'        => 'shoestrap_slider_toggle',
     'default'   => 1,
     'customizer'=> array(),
     'type'      => 'switch'
   );
 
-  $fields[] = array( 
+  $fields[] = array(
     'title'     => __( 'Slider Type', 'shoestrap' ),
     'desc'      => __( 'Select what type of slider you want.', 'shoestrap' ),
     'id'        => 'shoestrap_slider_type',
@@ -33,7 +33,19 @@ function shoestrap_slider_module_options( $sections ) {
     'default' => 'bootstrap'
   );
 
-  $fields[] = array( 
+  $fields[] = array(
+    'title'     => __( 'FlexSlider Style', 'shoestrap' ),
+    'desc'      => __( '', 'shoestrap' ),
+    'id'        => 'shoestrap_slider_flextype',
+    'type'      => 'button_set',
+    'options'   => array(
+      'basic'   => 'Basic',
+      'w_thumb' => 'With Thumb Navigation',
+    ),
+    'default' => 'basic'
+  );
+
+  $fields[] = array(
     'title'     => __( 'Flexslider Images Height', 'shoestrap_edd' ),
     'desc'      => '',
     'id'        => 'shoestrap_slider_height',
