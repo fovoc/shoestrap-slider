@@ -20,20 +20,6 @@
 .flex-control-nav,
 .flex-direction-nav {margin: 0; padding: 0; list-style: none;}
 
-/* Icon Fonts
-*********************************/
-/* Font-face Icons */
-@font-face {
-	font-family: 'flexslider-icon';
-	src:url('fonts/flexslider-icon.eot');
-	src:url('fonts/flexslider-icon.eot?#iefix') format('embedded-opentype'),
-		url('fonts/flexslider-icon.woff') format('woff'),
-		url('fonts/flexslider-icon.ttf') format('truetype'),
-		url('fonts/flexslider-icon.svg#flexslider-icon') format('svg');
-	font-weight: normal;
-	font-style: normal;
-}
-
 /* FlexSlider Necessary Styles
 *********************************/
 .flexslider {margin: 0; padding: 0;}
@@ -68,14 +54,14 @@ html[xmlns] .slides {display: block;}
 .flexslider:hover .flex-next { opacity: 0.7; right: 10px; }
 .flexslider:hover .flex-next:hover, .flexslider:hover .flex-prev:hover { opacity: 1; }
 .flex-direction-nav .flex-disabled { opacity: 0!important; filter:alpha(opacity=0); cursor: default; }
-.flex-direction-nav a:before  { font-family: "flexslider-icon"; font-size: 40px; display: inline-block; content: '\f001'; }
-.flex-direction-nav a.flex-next:before  { content: '\f002'; }
+.flex-direction-nav a:before  { font-family: "Elusive-Icons"; font-size: 40px; display: inline-block; content: '\e0fa'; }
+.flex-direction-nav a.flex-next:before  { content: '\e0f9'; }
 
 /* Pause/Play */
 .flex-pauseplay a { display: block; width: 20px; height: 20px; position: absolute; bottom: 5px; left: 10px; opacity: 0.8; z-index: 10; overflow: hidden; cursor: pointer; color: #000; }
-.flex-pauseplay a:before  { font-family: "flexslider-icon"; font-size: 20px; display: inline-block; content: '\f004'; }
+.flex-pauseplay a:before  { font-family: "Elusive-Icons"; font-size: 20px; display: inline-block; content: '\e075'; }
 .flex-pauseplay a:hover  { opacity: 1; }
-.flex-pauseplay a.flex-play:before { content: '\f003'; }
+.flex-pauseplay a.flex-play:before { content: '\e069'; }
 
 /* Control Nav */
 .flex-control-nav {width: 100%; position: absolute; bottom: -40px; text-align: center;}
