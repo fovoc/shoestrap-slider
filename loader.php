@@ -8,14 +8,24 @@ Author: Aristeides Stathopoulos
 Author URI: http://aristeides.com
 */
 
-require_once dirname( __FILE__ ) . '/includes/gallery-shortcode.php';
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
 
-wp_enqueue_style( 'shoestrap_mp_styles', plugins_url( 'assets/css/flexslider.css', __FILE__ ), false, null );
+// Add the admin options
+require_once dirname( __FILE__ ) . '/includes/admin-options.php';
+
+// If the user has selected not to use flexslider, do not process.
+$options = get_option( 'shoestrap' );
+if ( $options['shoestrap_slider_flex_on'] != 1 ) exit;
+
+// Add the flexslider gallery shortcode
+require_once dirname( __FILE__ ) . '/includes/gallery-shortcode.php';
 
 /*
  * Enqueue stylesheets and scripts
  */
 function shoestrap_slider_enqueue_resources() {
+	wp_enqueue_style( 'shoestrap_mp_styles', plugins_url( 'assets/css/flexslider.css', __FILE__ ), false, null );
 	wp_register_script( 'shoestrap_slider', plugins_url( 'assets/js/jquery.flexslider-min.js', __FILE__ ), false, null, true );
 	wp_enqueue_script( 'shoestrap_slider' );
 }
