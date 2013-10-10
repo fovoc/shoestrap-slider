@@ -8,4 +8,4 @@ Author: Aristeides Stathopoulos
 Author URI: http://aristeides.com
 */
 
-require_once dirname( __FILE__ ) . '/includes/wp_bootstrap_gallery.php';
+require_once dirname( __FILE__ ) . '/includes/gallery-shortcode.php';
