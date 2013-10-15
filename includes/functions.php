@@ -241,7 +241,7 @@ function shoestrap_slider_helper( $element, $class, $count = 0 ) {
 		elseif ( $element == 'slide_element_start' ) :
 			$content = '<div class="item ' . $count . '">';
 
-			if ( $class == 0 ) :
+			if ( $count == 0 ) :
 				$content = '<div class="item active">';
 			endif;
 
