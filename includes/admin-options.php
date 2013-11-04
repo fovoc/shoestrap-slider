@@ -9,7 +9,7 @@ function shoestrap_slider_module_options( $sections ) {
 
   $section = array(
     'title' => __( 'Slider', 'shoestrap' ),
-    'icon'  => 'elusive icon-shopping-cart icon-large'
+    'icon'  => 'elusive icon-th-large icon-large'
   );
 
   $fields[] = array(
@@ -35,7 +35,7 @@ function shoestrap_slider_module_options( $sections ) {
 
   $fields[] = array(
     'title'     => __( 'FlexSlider Style', 'shoestrap' ),
-    'desc'      => __( '', 'shoestrap' ),
+    'desc'      => __( 'This setting is only effective if "Flexslider" is set as your preferred Slider Type.', 'shoestrap' ),
     'id'        => 'shoestrap_slider_flextype',
     'type'      => 'button_set',
     'options'   => array(
@@ -46,7 +46,7 @@ function shoestrap_slider_module_options( $sections ) {
   );
 
   $fields[] = array(
-    'title'     => __( 'Flexslider Images Height', 'shoestrap_edd' ),
+    'title'     => __( 'Slider Images Height', 'shoestrap_edd' ),
     'desc'      => '',
     'id'        => 'shoestrap_slider_height',
     'default'   => 320,

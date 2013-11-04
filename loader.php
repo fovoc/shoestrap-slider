@@ -1,8 +1,8 @@
 <?php
 /*
-Plugin Name: Shoestrap Slider
+Plugin Name: Shoestrap 3 Slider
 Plugin URI: http://wpmu.io
-Description: Transforms WordPress Galleries
+Description: Transforms WordPress Galleries to Sliders
 Version: 1.00
 Author: Aristeides Stathopoulos
 Author URI: http://aristeides.com
