@@ -41,76 +41,60 @@ function shoestrap_slider_gallery( $attr ) {
 		'size'       => 'thumbnail',
 		'include'    => '',
 		'exclude'    => '',
-		'link'       => 'file'
+		'link'       => 'file',
+		'type'       => 'default',
+		'height'     => '450',
 	 ), $attr ) );
 
-	$id = intval( $id );
-	$columns = ( 12 % $columns == 0 ) ? $columns: 4;
-
-	if ( $order === 'RAND' ) :
-		$orderby = 'none';
-	endif;
-
-	if ( !empty( $include ) ) :
-		$_attachments = get_posts( array( 'include' => $include, 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => $order, 'orderby' => $orderby ) );
-
-		$attachments = array();
-		foreach ( $_attachments as $key => $val ) :
-			$attachments[$val->ID] = $_attachments[$key];
-		endforeach;
-	elseif ( !empty( $exclude ) ) :
-		$attachments = get_children( array( 'post_parent' => $id, 'exclude' => $exclude, 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => $order, 'orderby' => $orderby ) );
+	if ( $type == 'default' ) :
+		// If type is set to default, return the default Roots gallery
+		return roots_gallery( $attr );
 	else :
-		$attachments = get_children( array( 'post_parent' => $id, 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => $order, 'orderby' => $orderby ) );
-	endif;
+		// if type is not default, continue processing
+		$id = intval( $id );
+		$columns = ( 12 % $columns == 0 ) ? $columns: 4;
 
-	if ( empty( $attachments ) ) :
-		return '';
-	endif;
-
-	if ( is_feed() ) :
-		$output = "\n";
-		foreach ( $attachments as $att_id => $attachment ) :
-			$output .= wp_get_attachment_link( $att_id, $size, true ) . "\n";
-		endforeach;
-		return $output;
-	endif;
-
-	$unique = ( get_query_var( 'page' ) ) ? $instance . '-p' . get_query_var( 'page' ): $instance;
-	$output = shoestrap_slider_helper( 'wrapper_start', 'gallery-' . $post->ID . '-' . $unique );
-	$i = 0; foreach ( $attachments as $id => $attachment ) : $i++; endforeach;
-	$output .= shoestrap_slider_helper( 'before_inner_start', 'gallery-' . $post->ID . '-' . $unique, $i );
-	$output .= shoestrap_slider_helper( 'inner_start', 'slides' );
-
-	$width    = $options['screen_large_desktop'];
-	$height   = $options['shoestrap_slider_height'];
-
-	$i = 0;
-	foreach ( $attachments as $id => $attachment ) :
-
-		$imageurl = wp_get_attachment_url( $id );
-		$image_args = array( "url" => $imageurl, "width" => $width, "height" => $height );
-
-		$image = shoestrap_image_resize( $image_args );
-		$image_url = $image['url'];
-		$output .= shoestrap_slider_helper( 'slide_element_start', $imageurl, $i ) . '<img src="' . $image_url . '" />';
-		
-		if ( trim( $attachment->post_excerpt ) ) :
-			$output .= shoestrap_slider_helper( 'caption_start', '' );
-			$output .= wptexturize( $attachment->post_excerpt );
-			$output .= shoestrap_slider_helper( 'caption_end', '' );
+		if ( $order === 'RAND' ) :
+			$orderby = 'none';
 		endif;
-		
-		$output .= shoestrap_slider_helper( 'slide_element_end', '' );
-		$i++;
-	endforeach;
 
-	$output .= shoestrap_slider_helper( 'inner_end', '' );
-	$output .= shoestrap_slider_helper( 'before_wrapper_end', 'gallery-' . $post->ID . '-' . $unique );
-	$output .= shoestrap_slider_helper( 'wrapper_end', '' );
+		if ( !empty( $include ) ) :
+			$_attachments = get_posts( array( 'include' => $include, 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => $order, 'orderby' => $orderby ) );
 
-	if ( $options['shoestrap_slider_flextype'] == 'w_thumb' ) :
-		$output .= '<div id="carousel" class="flexslider"><ul class="slides">';
+			$attachments = array();
+			foreach ( $_attachments as $key => $val ) :
+				$attachments[$val->ID] = $_attachments[$key];
+			endforeach;
+		elseif ( !empty( $exclude ) ) :
+			$attachments = get_children( array( 'post_parent' => $id, 'exclude' => $exclude, 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => $order, 'orderby' => $orderby ) );
+		else :
+			$attachments = get_children( array( 'post_parent' => $id, 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => $order, 'orderby' => $orderby ) );
+		endif;
+
+		if ( empty( $attachments ) ) :
+			return '';
+		endif;
+
+		if ( is_feed() ) :
+			$output = "\n";
+			foreach ( $attachments as $att_id => $attachment ) :
+				$output .= wp_get_attachment_link( $att_id, $size, true ) . "\n";
+			endforeach;
+			return $output;
+		endif;
+
+		$unique = ( get_query_var( 'page' ) ) ? $instance . '-p' . get_query_var( 'page' ): $instance;
+		$output = shoestrap_slider_helper( 'wrapper_start', 'gallery-' . $post->ID . '-' . $unique, '', $type );
+		$i = 0; foreach ( $attachments as $id => $attachment ) : $i++; endforeach;
+		$output .= shoestrap_slider_helper( 'before_inner_start', 'gallery-' . $post->ID . '-' . $unique, $i, $type );
+		$output .= shoestrap_slider_helper( 'inner_start', 'slides', '', $type );
+
+		$width    = $options['screen_large_desktop'];
+		if ( $height ) :
+			$height = $height;
+		else :
+			$height   = $options['shoestrap_slider_height'];
+		endif;
 
 		$i = 0;
 		foreach ( $attachments as $id => $attachment ) :
@@ -120,17 +104,45 @@ function shoestrap_slider_gallery( $attr ) {
 
 			$image = shoestrap_image_resize( $image_args );
 			$image_url = $image['url'];
-			$output .= shoestrap_slider_helper( 'slide_element_start', $imageurl, $i ) . '<img src="' . $image_url . '" />';
-			$output .= shoestrap_slider_helper( 'slide_element_end', '' );
+			$output .= shoestrap_slider_helper( 'slide_element_start', $imageurl, $i, $type ) . '<img src="' . $image_url . '" />';
+			
+			if ( trim( $attachment->post_excerpt ) ) :
+				$output .= shoestrap_slider_helper( 'caption_start', '', '', $type );
+				$output .= wptexturize( $attachment->post_excerpt );
+				$output .= shoestrap_slider_helper( 'caption_end', '', '', $type );
+			endif;
+			
+			$output .= shoestrap_slider_helper( 'slide_element_end', '', '', $type );
 			$i++;
 		endforeach;
 
-		$output .= '</ul></div>';
+		$output .= shoestrap_slider_helper( 'inner_end', '', '', $type );
+		$output .= shoestrap_slider_helper( 'before_wrapper_end', 'gallery-' . $post->ID . '-' . $unique, '', $type );
+		$output .= shoestrap_slider_helper( 'wrapper_end', '', '', $type );
+
+		if ( $type == 'flexslider_thumbs' ) :
+			$output .= '<div id="carousel" class="flexslider"><ul class="slides">';
+
+			$i = 0;
+			foreach ( $attachments as $id => $attachment ) :
+
+				$imageurl = wp_get_attachment_url( $id );
+				$image_args = array( "url" => $imageurl, "width" => $width, "height" => $height );
+
+				$image = shoestrap_image_resize( $image_args );
+				$image_url = $image['url'];
+				$output .= shoestrap_slider_helper( 'slide_element_start', $imageurl, $i, $type ) . '<img src="' . $image_url . '" />';
+				$output .= shoestrap_slider_helper( 'slide_element_end', '', '', $type );
+				$i++;
+			endforeach;
+
+			$output .= '</ul></div>';
+		endif;
+
+		$output .= shoestrap_slider_gallery_script( '.gallery-' . $post->ID . '-' . $unique, $type );
+
+		return $output;
 	endif;
-
-	$output .= shoestrap_slider_gallery_script( '.gallery-' . $post->ID . '-' . $unique );
-
-	return $output;
 }
 
 
@@ -147,134 +159,138 @@ add_action( 'after_setup_theme', 'shoestrap_slider_gallery_setup_after_theme' );
 /*
  * The script required for the sliders.
  */
-function shoestrap_slider_gallery_script( $element = '' ) {
-	$options = get_option( 'shoestrap' );
+function shoestrap_slider_gallery_script( $element = '', $type = 'default' ) {
+	if ( $type != 'default' ) :
+		$options = get_option( 'shoestrap' );
 
-	// The Bootstrap Carousel script
-	if ( $options['shoestrap_slider_type'] == 'bootstrap' ) :
-		$script = '$("' . $element . '").carousel();';
+		// The Bootstrap Carousel script
+		if ( $type == 'bootstrap' ) :
+			$script = '$("' . $element . '").carousel();';
 
-	// If flexslider is selected, process the below
-	elseif ( $options['shoestrap_slider_type'] == 'flexslider' ) :
-		// The basic script
-		$script = '$("' . $element . '").flexslider({ animation: "slide" });';
+		// If flexslider is selected, process the below
+		elseif ( $type == 'flexslider' || $type == 'flexslider_thumbs' ) :
+			// The basic script
+			$script = '$("' . $element . '").flexslider({ animation: "slide" });';
 
-		// The script that adds thumbs if selected.
-		if ( $options['shoestrap_slider_flextype'] == 'w_thumb' ) :
-			$script = '
-				$("#carousel").flexslider({
-					animation: "slide",
-					controlNav: false,
-					animationLoop: false,
-					slideshow: false,
-					itemWidth: ' . ( $options['screen_large_desktop'] / 4 ) . ',
-					itemMargin: 0,
-					asNavFor: "' . $element . '"
-				});
+			// The script that adds thumbs if selected.
+			if ( $type == 'flexslider_thumbs' ) :
+				$script = '
+					$("#carousel").flexslider({
+						animation: "slide",
+						controlNav: false,
+						animationLoop: false,
+						slideshow: false,
+						itemWidth: ' . ( $options['screen_large_desktop'] / 4 ) . ',
+						itemMargin: 0,
+						asNavFor: "' . $element . '"
+					});
 
-				$("' . $element . '").flexslider({
-					animation: "slide",
-					controlNav: false,
-					animationLoop: false,
-					slideshow: false,
-					sync: "#carousel"
-				});';
+					$("' . $element . '").flexslider({
+						animation: "slide",
+						controlNav: false,
+						animationLoop: false,
+						slideshow: false,
+						sync: "#carousel"
+					});';
+			endif;
+
 		endif;
 
+		return '<script>$(window).load(function() {' . $script . '});</script>';
 	endif;
-
-	return '<script>$(window).load(function() {' . $script . '});</script>';
 }
 
 /*
  * Slider Helper function
  */
-function shoestrap_slider_helper( $element, $class, $count = 0 ) {
-	$options = get_option( 'shoestrap' );
+function shoestrap_slider_helper( $element, $class, $count = 0, $type = 'default' ) {
+	if ( $type != 'default' ) :
+		$options = get_option( 'shoestrap' );
 
-	$content = '';
+		$content = '';
 
-	// Elements for flexslider
-	if ( $options['shoestrap_slider_type'] == 'flexslider' ) :
+		// Elements for flexslider
+		if ( $type == 'flexslider' || $type == 'flexslider_thumbs' ) :
 
-		if ( $element == 'wrapper_start' ) :
-			$content = '<div class="flexslider ' . $class . '">';
+			if ( $element == 'wrapper_start' ) :
+				$content = '<div class="flexslider ' . $class . '">';
 
-		elseif ( $element == 'wrapper_end' ) :
-			$content = '</div>';
+			elseif ( $element == 'wrapper_end' ) :
+				$content = '</div>';
 
-		elseif ( $element == 'inner_start' ) :
-			$content = '<ul class="slides">';
+			elseif ( $element == 'inner_start' ) :
+				$content = '<ul class="slides">';
 
-		elseif ( $element == 'inner_end' ) :
-			$content = '</ul>';
+			elseif ( $element == 'inner_end' ) :
+				$content = '</ul>';
 
-		elseif ( $element == 'slide_element_start' ) :
-			$content = '<li data-thumb="' . $class . '">';
+			elseif ( $element == 'slide_element_start' ) :
+				$content = '<li data-thumb="' . $class . '">';
 
-		elseif ( $element == 'slide_element_end' ) :
-			$content = '</li>';
+			elseif ( $element == 'slide_element_end' ) :
+				$content = '</li>';
 
-		elseif ( $element == 'caption_start' ) :
-			$content = '<p class="flex-caption caption hidden">';
+			elseif ( $element == 'caption_start' ) :
+				$content = '<p class="flex-caption caption hidden">';
 
-		elseif ( $element == 'caption_end' ) :
-			$content = '</p>';
+			elseif ( $element == 'caption_end' ) :
+				$content = '</p>';
 
-		endif;
-
-	// Elements for Bootstrap Carousel
-	elseif ( $options['shoestrap_slider_type'] == 'bootstrap' ) :
-
-		if ( $element == 'wrapper_start' ) :
-			$content = '<div id="' . $class . '" class="carousel slide ' . $class . '">';
-
-		elseif ( $element == 'wrapper_end' ) :
-			$content = '</div>';
-
-		elseif ( $element == 'inner_start' ) :
-			$content = '<div class="carousel-inner ' . $class . '">';
-
-		elseif ( $element == 'inner_end' ) :
-			$content = '</div>';
-
-		elseif ( $element == 'slide_element_start' ) :
-			$content = '<div class="item ' . $count . '">';
-
-			if ( $count == 0 ) :
-				$content = '<div class="item active">';
 			endif;
 
-		elseif ( $element == 'slide_element_end' ) :
-			$content = '</div>';
+		// Elements for Bootstrap Carousel
+		elseif ( $type == 'bootstrap' ) :
 
-		elseif ( $element == 'before_wrapper_end' ) :
-			$content = '<a class="left carousel-control" href="#' . $class . '" data-slide="prev"><span class="elusive icon-prev"></span></a>';
-			$content .= '<a class="right carousel-control" href="#' . $class . '" data-slide="next"><span class="elusive icon-next"></span></a>';
+			if ( $element == 'wrapper_start' ) :
+				$content = '<div id="' . $class . '" class="carousel slide ' . $class . '">';
 
-		elseif ( $element == 'caption_start' ) :
-			$content = '<div class="carousel-caption">';
+			elseif ( $element == 'wrapper_end' ) :
+				$content = '</div>';
 
-		elseif ( $element == 'caption_end' ) :
-			$content = '</div>';
+			elseif ( $element == 'inner_start' ) :
+				$content = '<div class="carousel-inner ' . $class . '">';
 
-		elseif ( $element == 'before_inner_start' ) :
-			$content = '<ol class="carousel-indicators">';
+			elseif ( $element == 'inner_end' ) :
+				$content = '</div>';
 
-			for ( $i=0; $i<$count ; $i++ ) :
+			elseif ( $element == 'slide_element_start' ) :
+				$content = '<div class="item ' . $count . '">';
 
-				if ( $i == 0 ) :
-					$content .= '<li data-target="#' . $class . '" data-slide-to="' . $i . '" class="active"></li>';
-				else :
-					$content .= '<li data-target="#' . $class . '" data-slide-to="' . $i . '"></li>';
+				if ( $count == 0 ) :
+					$content = '<div class="item active">';
 				endif;
 
-			endfor;
+			elseif ( $element == 'slide_element_end' ) :
+				$content = '</div>';
 
-			$content .= '</ol>';
+			elseif ( $element == 'before_wrapper_end' ) :
+				$content = '<a class="left carousel-control" href="#' . $class . '" data-slide="prev"><span class="el-icon-prev"></span></a>';
+				$content .= '<a class="right carousel-control" href="#' . $class . '" data-slide="next"><span class="el-icon-next"></span></a>';
 
+			elseif ( $element == 'caption_start' ) :
+				$content = '<div class="carousel-caption">';
+
+			elseif ( $element == 'caption_end' ) :
+				$content = '</div>';
+
+			elseif ( $element == 'before_inner_start' ) :
+				$content = '<ol class="carousel-indicators">';
+
+				for ( $i=0; $i<$count ; $i++ ) :
+
+					if ( $i == 0 ) :
+						$content .= '<li data-target="#' . $class . '" data-slide-to="' . $i . '" class="active"></li>';
+					else :
+						$content .= '<li data-target="#' . $class . '" data-slide-to="' . $i . '"></li>';
+					endif;
+
+				endfor;
+
+				$content .= '</ol>';
+
+			endif;
 		endif;
-	endif;
 
-	return $content;
+		return $content;
+	endif;
 }

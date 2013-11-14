@@ -3,7 +3,7 @@
 Plugin Name: Shoestrap 3 Slider
 Plugin URI: http://wpmu.io
 Description: Transforms WordPress Galleries to Sliders
-Version: 1.00
+Version: 1.10
 Author: Aristeides Stathopoulos
 Author URI: http://aristeides.com
 */
@@ -24,6 +24,7 @@ if ( $options['shoestrap_slider_toggle'] != 0 ) :
 	add_action( 'wp_enqueue_scripts', 'shoestrap_slider_enqueue_resources', 102 );
 endif;
 
+
 /*
  * Enqueue stylesheets and scripts
  */
@@ -32,3 +33,60 @@ function shoestrap_slider_enqueue_resources() {
 	wp_register_script( 'shoestrap_slider', plugins_url( 'assets/js/jquery.flexslider-min.js', __FILE__ ), false, null, true );
 	wp_enqueue_script( 'shoestrap_slider' );
 }
+
+
+/*
+ * Fuction copied from the JetPack plugin
+ * Original function name: add_gallery_type()
+ */
+add_filter( 'jetpack_gallery_types', 'shoestrap_slider_add_gallery_type', 10 );
+function shoestrap_slider_add_gallery_type( $types = array() ) {
+	$types['bootstrap']         = esc_html__( 'Bootstrap Carousel', 'shoestrap_slider' );
+	$types['flexslider']        = esc_html__( 'FlexSlider', 'shoestrap_slider' );
+	$types['flexslider_thumbs'] = esc_html__( 'FlexSlider with Thumbnails', 'shoestrap_slider' );
+	return $types;
+}
+
+
+if ( !class_exists( 'Jetpack_Gallery_Settings' ) ) :
+/*
+ * Fuction copied from the JetPack plugin
+ * Original function name: admin_init()
+ */
+add_action( 'admin_init', 'shoestrap_slider_admin_init' );
+function shoestrap_slider_admin_init() {
+	add_action( 'wp_enqueue_media', 'shoestrap_slider_wp_enqueue_media' );
+	add_action( 'print_media_templates', 'shoestrap_slider_print_media_templates' );
+}
+
+/**
+ * Registers/enqueues the gallery settings admin js.
+ */
+function shoestrap_slider_wp_enqueue_media() {
+	if ( ! wp_script_is( 'jetpack-gallery-settings', 'registered' ) ) :
+		wp_register_script( 'jetpack-gallery-settings', plugins_url( 'assets/js/gallery-settings.js', __FILE__ ), array( 'media-views' ), '20121225' );
+	endif;
+
+	wp_enqueue_script( 'jetpack-gallery-settings' );
+}
+
+/**
+ * Outputs a view template which can be used with wp.media.template
+ */
+function shoestrap_slider_print_media_templates() {
+	$default_gallery_type = apply_filters( 'jetpack_default_gallery_type', 'default' );
+	$gallery_types = apply_filters( 'jetpack_gallery_types', array( 'default' => __( 'Thumbnail Grid', 'jetpack' ) ) );
+	?>
+	<script type="text/html" id="tmpl-jetpack-gallery-settings">
+		<label class="setting">
+			<span><?php _e( 'Type', 'shoestrap_slider' ); ?></span>
+			<select class="type" name="type" data-setting="type">
+				<?php foreach ( $gallery_types as $value => $caption ) : ?>
+					<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $value, $default_gallery_type ); ?>><?php echo esc_html( $caption ); ?></option>
+				<?php endforeach; ?>
+			</select>
+		</label>
+	</script>
+	<?php
+}
+endif;
