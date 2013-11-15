@@ -14,15 +14,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 // Add the admin options
 require_once dirname( __FILE__ ) . '/includes/admin-options.php';
 
-// If the user has selected not to use flexslider, do not process.
-$options = get_option( 'shoestrap' );
-if ( $options['shoestrap_slider_toggle'] != 0 ) :
-	// Add the flexslider gallery shortcode
-	require_once dirname( __FILE__ ) . '/includes/functions.php';
+// Add the flexslider gallery shortcode
+require_once dirname( __FILE__ ) . '/includes/functions.php';
 
-	// Enqueue stylesheets and scripts
-	add_action( 'wp_enqueue_scripts', 'shoestrap_slider_enqueue_resources', 102 );
-endif;
+// Enqueue stylesheets and scripts
+add_action( 'wp_enqueue_scripts', 'shoestrap_slider_enqueue_resources', 102 );
 
 
 /*
