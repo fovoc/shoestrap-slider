@@ -39,6 +39,25 @@ function shoestrap_slider_module_options( $sections ) {
 add_filter( 'redux-sections-' . REDUX_OPT_NAME, 'shoestrap_slider_module_options', 1 );   
 endif;
 
+
+if ( !function_exists( 'shoestrap_addon_slider_licensing' ) ) :
+function shoestrap_addon_slider_licensing($section) {
+  $section['fields'][] = array( 
+    'title'            => __( 'Shoestrap Slider Licence', 'shoestrap' ),
+    'id'              => 'shoestrap_slider_license_key',
+    'default'         => '',
+    'type'            => 'edd_license',
+    'mode'            => 'plugin', // theme|plugin
+    'path'            => SHOESTRAPSLIDERFILE, // Path to the plugin/template main file
+    'remote_api_url'  => 'http://shoestrap.org',    // our store URL that is running EDD
+    'field_id'        => "shoestrap_license_key", // ID of the field used by EDD
+  ); 
+  return $section;
+}
+endif;
+add_filter( 'shoestrap_module_licencing_options_modifier', 'shoestrap_addon_slider_licensing' );
+
+
 function shoestrap_slider_admin_help() {
   $content = '<div style="font-size: 1.2em;">';
   $content .= '<h4>Plugin Usage:</h4>';

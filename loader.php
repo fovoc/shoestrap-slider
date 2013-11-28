@@ -11,6 +11,8 @@ Author URI: http://aristeides.com
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+define( 'SHOESTRAPSLIDERFILE', __FILE__ );
+
 // Add the admin options
 require_once dirname( __FILE__ ) . '/includes/admin-options.php';
 
