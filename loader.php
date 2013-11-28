@@ -2,8 +2,8 @@
 /*
 Plugin Name: Shoestrap 3 Slider
 Plugin URI: http://wpmu.io
-Description: Transforms WordPress Galleries to Sliders
-Version: 1.10
+Description: Transform WordPress Galleries to Sliders
+Version: 1.12
 Author: Aristeides Stathopoulos
 Author URI: http://aristeides.com
 */
@@ -16,7 +16,7 @@ define( 'SHOESTRAPSLIDERFILE', __FILE__ );
 // Add the admin options
 require_once dirname( __FILE__ ) . '/includes/admin-options.php';
 
-// Add the flexslider gallery shortcode
+// Add the gallery shortcode, replacing the WordPress default.
 require_once dirname( __FILE__ ) . '/includes/functions.php';
 
 // Enqueue stylesheets and scripts
