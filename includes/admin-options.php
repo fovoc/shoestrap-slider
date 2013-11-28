@@ -1,6 +1,10 @@
 <?php
 
-require_once get_template_directory() . '/lib/modules/core.redux/module.php';
+
+if ( file_exists( get_template_directory() . '/lib/modules/core.redux/module.php' ) ) :
+  require_once get_template_directory() . '/lib/modules/core.redux/module.php';
+endif;
+
 /*
  * Shoestrap EDD Addon options
  */
@@ -58,6 +62,7 @@ endif;
 add_filter( 'shoestrap_module_licencing_options_modifier', 'shoestrap_addon_slider_licensing' );
 
 
+if ( !function_exists( 'shoestrap_slider_admin_help' ) ) :
 function shoestrap_slider_admin_help() {
   $content = '<div style="font-size: 1.2em;">';
   $content .= '<h4>Plugin Usage:</h4>';
@@ -69,3 +74,4 @@ function shoestrap_slider_admin_help() {
 
   return $content;
 }
+endif;

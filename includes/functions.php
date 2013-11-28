@@ -3,6 +3,7 @@
 /*
  * Replace gallery_shortcode()
  */
+if ( !function_exists( 'shoestrap_slider_gallery' ) ) :
 function shoestrap_slider_gallery( $attr ) {
 	$post = get_post();
 	$options = get_option( 'shoestrap' );
@@ -144,21 +145,25 @@ function shoestrap_slider_gallery( $attr ) {
 		return $output;
 	endif;
 }
+endif;
 
 
 /*
  * Replace default gallery with our custom shortcode
  */
+if ( !function_exists( 'shoestrap_slider_gallery_setup_after_theme' ) ) :
 function shoestrap_slider_gallery_setup_after_theme() {
 	remove_shortcode( 'gallery' );
 	add_shortcode( 'gallery', 'shoestrap_slider_gallery' );
 }
+endif;
 add_action( 'after_setup_theme', 'shoestrap_slider_gallery_setup_after_theme' );
 
 
 /*
  * The script required for the sliders.
  */
+if ( !function_exists( 'shoestrap_slider_gallery_script' ) ) :
 function shoestrap_slider_gallery_script( $element = '', $type = 'default' ) {
 	if ( $type != 'default' ) :
 		$options = get_option( 'shoestrap' );
@@ -199,10 +204,13 @@ function shoestrap_slider_gallery_script( $element = '', $type = 'default' ) {
 		return '<script>$(window).load(function() {' . $script . '});</script>';
 	endif;
 }
+endif;
+
 
 /*
  * Slider Helper function
  */
+if ( !function_exists( 'shoestrap_slider_helper' ) ) :
 function shoestrap_slider_helper( $element, $class, $count = 0, $type = 'default' ) {
 	if ( $type != 'default' ) :
 		$options = get_option( 'shoestrap' );
@@ -294,3 +302,4 @@ function shoestrap_slider_helper( $element, $class, $count = 0, $type = 'default
 		return $content;
 	endif;
 }
+endif;
