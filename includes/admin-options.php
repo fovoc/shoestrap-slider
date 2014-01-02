@@ -40,7 +40,8 @@ function shoestrap_slider_module_options( $sections ) {
   $sections[] = $section;
   return $sections;
 }
-add_filter( 'redux-sections-' . REDUX_OPT_NAME, 'shoestrap_slider_module_options', 1 );   
+add_filter( 'redux-sections-' . REDUX_OPT_NAME, 'shoestrap_slider_module_options', 1 );
+add_filter( 'redux/options/' . REDUX_OPT_NAME . '/sections', 'shoestrap_slider_module_options', 1 );
 endif;
 
 
