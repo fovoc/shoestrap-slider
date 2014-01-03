@@ -1,9 +1,11 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-if ( file_exists( get_template_directory() . '/lib/modules/core.redux/module.php' ) ) :
+if ( file_exists( get_template_directory() . '/lib/modules/core.redux/module.php' ) )
   require_once get_template_directory() . '/lib/modules/core.redux/module.php';
-endif;
+else
+  exit;
 
 /*
  * Shoestrap Slider Addon options
@@ -40,7 +42,6 @@ function shoestrap_slider_module_options( $sections ) {
   $sections[] = $section;
   return $sections;
 }
-// add_filter( 'redux-sections-' . REDUX_OPT_NAME, 'shoestrap_slider_module_options', 1 );
 add_filter( 'redux/options/' . REDUX_OPT_NAME . '/sections', 'shoestrap_slider_module_options', 1 );
 endif;
 

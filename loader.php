@@ -13,6 +13,21 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 define( 'SHOESTRAPSLIDERFILE', __FILE__ );
 
+// Prioritize loading of some necessary core modules
+if ( file_exists( get_template_directory() . '/lib/modules/core.redux/module.php' ) )
+	require_once get_template_directory() . '/lib/modules/core.redux/module.php';
+
+if ( file_exists( get_template_directory() . '/lib/modules/core/module.php' ) )
+	require_once get_template_directory() . '/lib/modules/core/module.php';
+
+if ( file_exists( get_template_directory() . '/lib/modules/core.layout/module.php' ) )
+	require_once get_template_directory() . '/lib/modules/core.layout/module.php';
+
+if ( file_exists( get_template_directory() . '/lib/modules/core.images/module.php' ) )
+	require_once get_template_directory() . '/lib/modules/core.images/module.php';
+
+if ( !function_exists( 'shoestrap_getVariable' ) ) exit; // Exit if shoestrap is not detected.
+
 // Add the admin options
 require_once dirname( __FILE__ ) . '/includes/admin-options.php';
 
@@ -70,9 +85,8 @@ if ( !class_exists( 'Jetpack_Gallery_Settings' ) ) :
 	 */
 	if ( !function_exists( 'shoestrap_slider_wp_enqueue_media' ) ) :
 	function shoestrap_slider_wp_enqueue_media() {
-		if ( ! wp_script_is( 'jetpack-gallery-settings', 'registered' ) ) :
+		if ( ! wp_script_is( 'jetpack-gallery-settings', 'registered' ) )
 			wp_register_script( 'jetpack-gallery-settings', plugins_url( 'assets/js/gallery-settings.js', __FILE__ ), array( 'media-views' ), '20121225' );
-		endif;
 
 		wp_enqueue_script( 'jetpack-gallery-settings' );
 	}
