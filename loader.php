@@ -3,7 +3,7 @@
 Plugin Name: Shoestrap 3 Slider
 Plugin URI: http://wpmu.io
 Description: Transform WordPress Galleries to Sliders
-Version: 1.13
+Version: 1.14
 Author: Aristeides Stathopoulos
 Author URI: http://aristeides.com
 GitHub Plugin URI: https://github.com/shoestrap/shoestrap-slider
