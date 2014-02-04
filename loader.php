@@ -3,30 +3,20 @@
 Plugin Name: Shoestrap 3 Slider
 Plugin URI: http://wpmu.io
 Description: Transform WordPress Galleries to Sliders
-Version: 1.13
+Version: 1.14
 Author: Aristeides Stathopoulos
 Author URI: http://aristeides.com
+GitHub Plugin URI: https://github.com/shoestrap/shoestrap-slider
+GitHub Access Token: 9570d6239f768f1a3cb9112db4d0b47ca84cc05b
 */
 
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+if ( !defined( 'REDUX_OPT_NAME' ) )
+	define( 'REDUX_OPT_NAME', 'shoestrap' );
+
 define( 'SHOESTRAPSLIDERFILE', __FILE__ );
-
-// Prioritize loading of some necessary core modules
-if ( file_exists( get_template_directory() . '/lib/modules/core.redux/module.php' ) )
-	require_once get_template_directory() . '/lib/modules/core.redux/module.php';
-
-if ( file_exists( get_template_directory() . '/lib/modules/core/module.php' ) )
-	require_once get_template_directory() . '/lib/modules/core/module.php';
-
-if ( file_exists( get_template_directory() . '/lib/modules/core.layout/module.php' ) )
-	require_once get_template_directory() . '/lib/modules/core.layout/module.php';
-
-if ( file_exists( get_template_directory() . '/lib/modules/core.images/module.php' ) )
-	require_once get_template_directory() . '/lib/modules/core.images/module.php';
-
-if ( !function_exists( 'shoestrap_getVariable' ) ) exit; // Exit if shoestrap is not detected.
 
 // Add the admin options
 require_once dirname( __FILE__ ) . '/includes/admin-options.php';

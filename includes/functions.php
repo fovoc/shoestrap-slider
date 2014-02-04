@@ -2,14 +2,18 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-if ( !function_exists( 'shoestrap_getVariable' ) ) exit; // Exit if shoestrap is not detected.
-
 /*
  * Replace gallery_shortcode()
  */
 if ( !function_exists( 'shoestrap_slider_gallery' ) ) :
 function shoestrap_slider_gallery( $attr ) {
 	$post = get_post();
+	$settings = get_option( REDUX_OPT_NAME );
+
+	$shoestrap_slider_height = $settings['shoestrap_slider_height'];
+
+	if ( !isset( $shoestrap_slider_height ) || empty( $shoestrap_slider_height ) )
+		$shoestrap_slider_height = 450;
 
 	static $instance = 0;
 	$instance++;
@@ -43,7 +47,7 @@ function shoestrap_slider_gallery( $attr ) {
 		'exclude'    => '',
 		'link'       => 'file',
 		'type'       => 'default',
-		'height'     => shoestrap_getVariable( 'shoestrap_slider_height' ),
+		'height'     => $shoestrap_slider_height,
 	 ), $attr ) );
 
 	// If type is set to default, return the default Roots gallery
