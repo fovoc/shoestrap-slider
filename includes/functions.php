@@ -7,10 +7,11 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  */
 if ( !function_exists( 'shoestrap_slider_gallery' ) ) :
 function shoestrap_slider_gallery( $attr ) {
-	$post = get_post();
-	$settings = get_option( REDUX_OPT_NAME );
+	global $ss_layout, $ss_settings;
 
-	$shoestrap_slider_height = $settings['shoestrap_slider_height'];
+	$post = get_post();
+
+	$shoestrap_slider_height = $ss_settings['shoestrap_slider_height'];
 
 	if ( !isset( $shoestrap_slider_height ) || empty( $shoestrap_slider_height ) )
 		$shoestrap_slider_height = 450;
@@ -50,9 +51,9 @@ function shoestrap_slider_gallery( $attr ) {
 		'height'     => $shoestrap_slider_height,
 	 ), $attr ) );
 
-	// If type is set to default, return the default Roots gallery
+	// If type is set to default, return the default Shoetrap gallery
 	if ( $type == 'default' ) {
-		return roots_gallery( $attr );
+		return shoestrap_gallery( $attr );
 	} else {
 		// if type is not default, continue processing
 		$id = intval( $id );
@@ -92,14 +93,14 @@ function shoestrap_slider_gallery( $attr ) {
 		$output .= shoestrap_slider_helper( 'before_inner_start', 'gallery-' . $post->ID . '-' . $unique, $i, $type );
 		$output .= shoestrap_slider_helper( 'inner_start', 'slides', '', $type );
 
-		$width    = shoestrap_content_width_px();
+		$width = $ss_layout->content_width_px();
 
 		$i = 0;
 		foreach ( $attachments as $id => $attachment ) {
 			$imageurl = wp_get_attachment_url( $id );
 			$image_args = array( "url" => $imageurl, "width" => $width, "height" => $height );
 
-			$image = shoestrap_image_resize( $image_args );
+			$image = Shoestrap_Image::image_resize( $image_args );
 			$image_url = $image['url'];
 			$output .= shoestrap_slider_helper( 'slide_element_start', $imageurl, $i, $type ) . '<img src="' . $image_url . '" />';
 			
