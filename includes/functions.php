@@ -5,34 +5,36 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /*
  * Replace gallery_shortcode()
  */
-if ( !function_exists( 'shoestrap_slider_gallery' ) ) :
 function shoestrap_slider_gallery( $attr ) {
-	global $ss_layout, $ss_settings;
+	global $ss_layout, $ss_settings, $ss_framework;
 
 	$post = get_post();
 
 	$shoestrap_slider_height = $ss_settings['shoestrap_slider_height'];
 
-	if ( !isset( $shoestrap_slider_height ) || empty( $shoestrap_slider_height ) )
+	if ( ! isset( $shoestrap_slider_height ) || empty( $shoestrap_slider_height ) ) {
 		$shoestrap_slider_height = 450;
+	}
 
 	static $instance = 0;
 	$instance++;
 
-	if ( !empty( $attr['ids'] ) ) {
+	if ( ! empty( $attr['ids'] ) ) {
 		$attr['orderby'] = ( empty( $attr['orderby'] ) ) ? 'post__in' : '';
 		$attr['include'] = $attr['ids'];
 	}
 
 	$output = apply_filters( 'post_gallery', '', $attr );
 
-	if ( $output != '' )
+	if ( $output != '' ) {
 		return $output;
+	}
 
 	if ( isset( $attr['orderby'] ) ) {
 		$attr['orderby'] = sanitize_sql_orderby( $attr['orderby'] );
-		if ( !$attr['orderby'] )
+		if ( ! $attr['orderby'] ) {
 			unset( $attr['orderby'] );
+		}
 	}
 
 	extract( shortcode_atts( array( 
@@ -53,33 +55,44 @@ function shoestrap_slider_gallery( $attr ) {
 
 	// If type is set to default, return the default Shoetrap gallery
 	if ( $type == 'default' ) {
+
 		return shoestrap_gallery( $attr );
+
 	} else {
 		// if type is not default, continue processing
 		$id = intval( $id );
 		$columns = ( 12 % $columns == 0 ) ? $columns: 4;
 
-		if ( $order === 'RAND' )
+		if ( $order === 'RAND' ) {
 			$orderby = 'none';
+		}
 
-		if ( !empty( $include ) ) {
+		if ( ! empty( $include ) ) {
 			$_attachments = get_posts( array( 'include' => $include, 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => $order, 'orderby' => $orderby ) );
 
 			$attachments = array();
+
 			foreach ( $_attachments as $key => $val ) {
 				$attachments[$val->ID] = $_attachments[$key];
 			}
-		} elseif ( !empty( $exclude ) ) {
+
+		} elseif ( ! empty( $exclude ) ) {
+
 			$attachments = get_children( array( 'post_parent' => $id, 'exclude' => $exclude, 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => $order, 'orderby' => $orderby ) );
+
 		} else {
+
 			$attachments = get_children( array( 'post_parent' => $id, 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => $order, 'orderby' => $orderby ) );
+
 		}
 
-		if ( empty( $attachments ) )
+		if ( empty( $attachments ) ) {
 			return '';
+		}
 
 		if ( is_feed() ) {
 			$output = "\n";
+
 			foreach ( $attachments as $att_id => $attachment ) {
 				$output .= wp_get_attachment_link( $att_id, $size, true ) . "\n";
 			}
@@ -88,20 +101,25 @@ function shoestrap_slider_gallery( $attr ) {
 		}
 
 		$unique = ( get_query_var( 'page' ) ) ? $instance . '-p' . get_query_var( 'page' ) : $instance;
+
 		$output = shoestrap_slider_helper( 'wrapper_start', 'gallery-' . $post->ID . '-' . $unique, '', $type );
+
 		$i = 0; foreach ( $attachments as $id => $attachment ) { $i++; }
+
 		$output .= shoestrap_slider_helper( 'before_inner_start', 'gallery-' . $post->ID . '-' . $unique, $i, $type );
 		$output .= shoestrap_slider_helper( 'inner_start', 'slides', '', $type );
 
 		$width = $ss_layout->content_width_px();
 
 		$i = 0;
+
 		foreach ( $attachments as $id => $attachment ) {
 			$imageurl = wp_get_attachment_url( $id );
 			$image_args = array( "url" => $imageurl, "width" => $width, "height" => $height );
 
 			$image = Shoestrap_Image::image_resize( $image_args );
 			$image_url = $image['url'];
+
 			$output .= shoestrap_slider_helper( 'slide_element_start', $imageurl, $i, $type ) . '<img src="' . $image_url . '" />';
 			
 			if ( trim( $attachment->post_excerpt ) ) {
@@ -109,8 +127,10 @@ function shoestrap_slider_gallery( $attr ) {
 				$output .= wptexturize( $attachment->post_excerpt );
 				$output .= shoestrap_slider_helper( 'caption_end', '', '', $type );
 			}
+
 			$output .= shoestrap_slider_helper( 'slide_element_end', '', '', $type );
 			$i++;
+
 		}
 
 		$output .= shoestrap_slider_helper( 'inner_end', '', '', $type );
@@ -118,6 +138,7 @@ function shoestrap_slider_gallery( $attr ) {
 		$output .= shoestrap_slider_helper( 'wrapper_end', '', '', $type );
 
 		if ( $type == 'flexslider_thumbs' ) {
+
 			$output .= '<div id="carousel" class="flexslider"><ul class="slides">';
 
 			$i = 0;
@@ -138,27 +159,27 @@ function shoestrap_slider_gallery( $attr ) {
 		return $output;
 	}
 }
-endif;
-
 
 /*
  * Replace default gallery with our custom shortcode
  */
-if ( !function_exists( 'shoestrap_slider_gallery_setup_after_theme' ) ) :
 function shoestrap_slider_gallery_setup_after_theme() {
 	remove_shortcode( 'gallery' );
 	add_shortcode( 'gallery', 'shoestrap_slider_gallery' );
 }
-endif;
 add_action( 'after_setup_theme', 'shoestrap_slider_gallery_setup_after_theme' );
 
 
 /*
  * The script required for the sliders.
  */
-if ( !function_exists( 'shoestrap_slider_gallery_script' ) ) :
 function shoestrap_slider_gallery_script( $element = '', $type = 'default' ) {
-	global $ss_layout;
+	global $ss_layout, $ss_framework;
+
+	if ( SS_FRAMEWORK != 'bootstrap' && $type == 'bootstrap' ) {
+		$type = 'flexslider';
+	}
+
 	if ( $type != 'default' ) {
 
 		// The Bootstrap Carousel script
@@ -194,39 +215,42 @@ function shoestrap_slider_gallery_script( $element = '', $type = 'default' ) {
 		return '<script>var $j = jQuery.noConflict(); $j(window).load(function() {' . $script . '});</script>';
 	}
 }
-endif;
-
 
 /*
  * Slider Helper function
  */
-if ( !function_exists( 'shoestrap_slider_helper' ) ) :
 function shoestrap_slider_helper( $element, $class, $count = 0, $type = 'default' ) {
 	if ( $type != 'default' ) {
+
+		if ( SS_FRAMEWORK != 'bootstrap' && $type == 'bootstrap' ) {
+			$type = 'flexslider';
+		}
 
 		$content = '';
 
 		// Elements for flexslider
 		if ( $type == 'flexslider' || $type == 'flexslider_thumbs' ) {
-			if ( $element == 'wrapper_start' )
+			if ( $element == 'wrapper_start' ) {
 				$content = '<div class="flexslider ' . $class . '">';
-			elseif ( $element == 'wrapper_end' )
+			} elseif ( $element == 'wrapper_end' ) {
 				$content = '</div>';
-			elseif ( $element == 'inner_start' )
+			} elseif ( $element == 'inner_start' ) {
 				$content = '<ul class="slides">';
-			elseif ( $element == 'inner_end' )
+			} elseif ( $element == 'inner_end' ) {
 				$content = '</ul>';
-			elseif ( $element == 'slide_element_start' )
+			} elseif ( $element == 'slide_element_start' ) {
 				$content = '<li data-thumb="' . $class . '">';
-			elseif ( $element == 'slide_element_end' )
+			} elseif ( $element == 'slide_element_end' ) {
 				$content = '</li>';
-			elseif ( $element == 'caption_start' )
+			} elseif ( $element == 'caption_start' ) {
 				$content = '<p class="flex-caption caption hidden">';
-			elseif ( $element == 'caption_end' )
+			} elseif ( $element == 'caption_end' ) {
 				$content = '</p>';
+			}
 
 		// Elements for Bootstrap Carousel
 		} elseif ( $type == 'bootstrap' ) {
+
 			if ( $element == 'wrapper_start' ) {
 				$content = '<div id="' . $class . '" class="carousel slide ' . $class . '">';
 			} elseif ( $element == 'wrapper_end' ) {
@@ -247,9 +271,11 @@ function shoestrap_slider_helper( $element, $class, $count = 0, $type = 'default
 				$content = '</div>';
 			} elseif ( $element == 'before_inner_start' ) {
 				$content = '<ol class="carousel-indicators">';
+
 				for ( $i=0; $i<$count ; $i++ ) {
 					$content .= ( $i == 0 ) ? '<li data-target="#' . $class . '" data-slide-to="' . $i . '" class="active"></li>' : '<li data-target="#' . $class . '" data-slide-to="' . $i . '"></li>';
 				}
+
 				$content .= '</ol>';
 			}
 		}
@@ -257,4 +283,3 @@ function shoestrap_slider_helper( $element, $class, $count = 0, $type = 'default
 		return $content;
 	}
 }
-endif;
