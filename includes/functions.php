@@ -124,7 +124,7 @@ function shoestrap_slider_gallery( $attr ) {
 			foreach ( $attachments as $id => $attachment ) {
 				$imageurl = wp_get_attachment_url( $id );
 				$image_args = array( "url" => $imageurl, "width" => $width, "height" => $height );
-				$image = shoestrap_image_resize( $image_args );
+				$image = Shoestrap_Image::image_resize( $image_args );
 				$image_url = $image['url'];
 				$output .= shoestrap_slider_helper( 'slide_element_start', $imageurl, $i, $type ) . '<img src="' . $image_url . '" />';
 				$output .= shoestrap_slider_helper( 'slide_element_end', '', '', $type );
@@ -158,29 +158,30 @@ add_action( 'after_setup_theme', 'shoestrap_slider_gallery_setup_after_theme' );
  */
 if ( !function_exists( 'shoestrap_slider_gallery_script' ) ) :
 function shoestrap_slider_gallery_script( $element = '', $type = 'default' ) {
+	global $ss_layout;
 	if ( $type != 'default' ) {
 
 		// The Bootstrap Carousel script
 		if ( $type == 'bootstrap' ) {
-			$script = '$("' . $element . '").carousel();';
+			$script = '$j("' . $element . '").carousel();';
 		} elseif ( $type == 'flexslider' || $type == 'flexslider_thumbs' ) { // If flexslider is selected, process the below
 			// The basic script
-			$script = '$("' . $element . '").flexslider({ animation: "slide" });';
+			$script = '$j("' . $element . '").flexslider({ animation: "slide" });';
 
 			// The script that adds thumbs if selected.
 			if ( $type == 'flexslider_thumbs' ) {
 				$script = '
-					$("#carousel").flexslider({
+					$j("#carousel").flexslider({
 						animation: "slide",
 						controlNav: false,
 						animationLoop: false,
 						slideshow: false,
-						itemWidth: ' . ( shoestrap_content_width_px() / 4 ) . ',
+						itemWidth: ' . ( $ss_layout->content_width_px() / 4 ) . ',
 						itemMargin: 0,
 						asNavFor: "' . $element . '"
 					});
 
-					$("' . $element . '").flexslider({
+					$j("' . $element . '").flexslider({
 						animation: "slide",
 						controlNav: false,
 						animationLoop: false,
@@ -190,7 +191,7 @@ function shoestrap_slider_gallery_script( $element = '', $type = 'default' ) {
 			}
 		}
 
-		return '<script>$(window).load(function() {' . $script . '});</script>';
+		return '<script>var $j = jQuery.noConflict(); $j(window).load(function() {' . $script . '});</script>';
 	}
 }
 endif;
