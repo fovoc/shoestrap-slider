@@ -6,8 +6,6 @@ Description: Transform WordPress Galleries to Sliders
 Version: 1.2
 Author: Aristeides Stathopoulos
 Author URI: http://aristeides.com
-GitHub Plugin URI: https://github.com/shoestrap/shoestrap-slider
-GitHub Access Token: 35ac969e65c1e15373b79cfb0bdfc0e025529b15
 */
 
 // Exit if accessed directly
@@ -109,10 +107,10 @@ function shoestrap_slider_updater() {
 		'remote_api_url' => 'http://shoestrap.org',
 		'item_name'      => 'Shoestrap 3 Slider Addon',
 		'version'        => '1.2',
-		'author'         => 'aristath, fovoc',
+		'author'         => 'aristath',
 		'mode'           => 'theme',
-		'title'          => 'Shoestrap 3 WooCommerce Child Theme License',
-		'field_name'     => 'shoestrap_woo_theme_license',
+		'title'          => 'Shoestrap 3 Slider Addon License',
+		'field_name'     => 'shoestrap_slider_addon_license',
 		'description'    => '',
 		'single_license' => false
 	);
