@@ -3,7 +3,7 @@
 Plugin Name: Shoestrap 3 Slider
 Plugin URI: http://wpmu.io
 Description: Transform WordPress Galleries to Sliders
-Version: 1.2
+Version: 1.3
 Author: Aristeides Stathopoulos
 Author URI: http://aristeides.com
 */
@@ -101,23 +101,4 @@ if ( ! class_exists( 'Jetpack_Gallery_Settings' ) ) {
 	}
 }
 
-function shoestrap_slider_updater() {
-
-	$args = array(
-		'remote_api_url' => 'http://shoestrap.org',
-		'item_name'      => 'Shoestrap 3 Slider Addon',
-		'version'        => '1.2',
-		'author'         => 'aristath',
-		'mode'           => 'theme',
-		'title'          => 'Shoestrap 3 Slider Addon License',
-		'field_name'     => 'shoestrap_slider_addon_license',
-		'description'    => '',
-		'single_license' => false
-	);
-
-	if ( class_exists( 'SS_EDD_SL_Updater' ) ) {
-		$updater = new SS_EDD_SL_Updater( $args );
-	}
-
-}
-add_action( 'admin_init', 'shoestrap_slider_updater' );
+require_once dirname( __FILE__ ) . '/includes/updater/updater.php';
