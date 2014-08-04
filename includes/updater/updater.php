@@ -26,7 +26,7 @@ add_action( 'admin_init', 'shoestrap_slider_plugin_updater' );
  */
 if ( ! function_exists( 'ss_updater_add_menus' ) ) {
 	function ss_updater_add_menus() {
-		add_theme_page( 'Shoestrap Extensions & Addons', 'Shoestrap Extensions', 'manage_options', 'ss-updater', 'ss_updater_settings_page' );
+		add_options_page( 'Shoestrap Extensions & Addons', 'Shoestrap Extensions', 'manage_options', 'ss-updater', 'ss_updater_settings_page' );
 	}
 
 	add_action( 'admin_menu', 'ss_updater_add_menus' );
